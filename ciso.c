@@ -22,6 +22,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <zlib.h>               /* /usr(/local)/include/zlib.h */
 #include <zconf.h>
 
@@ -117,7 +118,7 @@ int decomp_ciso(void)
 	ciso_total_block = ciso.total_bytes / ciso.block_size;
 
 	/* allocate index block */
-	index_size = (ciso_total_block + 1 ) * sizeof(unsigned long);
+	index_size = (ciso_total_block + 1 ) * sizeof(unsigned int);
 	index_buf  = malloc(index_size);
 	block_buf1 = malloc(ciso.block_size);
 	block_buf2 = malloc(ciso.block_size*2);
@@ -138,7 +139,7 @@ int decomp_ciso(void)
 
 	/* show info */
 	printf("Decompress '%s' to '%s'\n",fname_in,fname_out);
-	printf("Total File Size %ld bytes\n",ciso.total_bytes);
+	printf("Total File Size %llu bytes\n",ciso.total_bytes);
 	printf("block size      %d  bytes\n",ciso.block_size);
 	printf("total blocks    %d  blocks\n",ciso_total_block);
 	printf("index align     %d\n",1<<ciso.align);
@@ -257,7 +258,7 @@ int comp_ciso(int level)
 	}
 
 	/* allocate index block */
-	index_size = (ciso_total_block + 1 ) * sizeof(unsigned long);
+	index_size = (ciso_total_block + 1 ) * sizeof(unsigned int);
 	index_buf  = malloc(index_size);
 	crc_buf    = malloc(index_size);
 	block_buf1 = malloc(ciso.block_size);
@@ -279,7 +280,7 @@ int comp_ciso(int level)
 
 	/* show info */
 	printf("Compress '%s' to '%s'\n",fname_in,fname_out);
-	printf("Total File Size %ld bytes\n",ciso.total_bytes);
+	printf("Total File Size %llu bytes\n",ciso.total_bytes);
 	printf("block size      %d  bytes\n",ciso.block_size);
 	printf("index align     %d\n",1<<ciso.align);
 	printf("compress level  %d\n",level);
@@ -304,7 +305,7 @@ int comp_ciso(int level)
 		if(--percent_cnt<=0)
 		{
 			percent_cnt = percent_period;
-			printf("compress %3d%% avarage rate %3d%%\r"
+			printf("compress %3d%% average rate %llu%%\r"
 				,block / percent_period
 				,block==0 ? 0 : 100*write_pos/(block*0x800));
 		}
